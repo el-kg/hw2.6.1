@@ -6,17 +6,16 @@ import skypro.EmployeeBook.exception.EmployeeAlreadyAddedException;
 import skypro.EmployeeBook.exception.EmployeeNotFoundException;
 import skypro.EmployeeBook.exception.EmployeeStorageIsFullException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    private List<Employee> employees;
+    private final Map<String,Employee> employees;
     private static final int EMPLOYEES_SIZE = 5;
 
     public EmployeeServiceImpl() {
-        this.employees = new ArrayList<>();
+        this.employees = new HashMap<>();
     }
 
     @Override
@@ -24,18 +23,21 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employees.size() == EMPLOYEES_SIZE) {
             throw new EmployeeStorageIsFullException();
         }
-        Employee employee = new Employee(firstName, lastName);
-        if (employees.contains(employee)) {
+
+        String key = generateKey(lastName,firstName);
+        if (employees.containsKey(key)) {
             throw new EmployeeAlreadyAddedException();
         }
-        employees.add(employee);
+        Employee employee = new Employee(firstName, lastName);
+        employees.put(key,employee);
         return employee;
     }
 
     @Override
     public Employee deleteEmployee(String firstName, String lastName) {
-        Employee employee = new Employee(firstName, lastName);
-        if (!employees.remove(employee)) {
+        String key = generateKey(lastName,firstName);
+        Employee employee = employees.remove(key);
+        if (Objects.isNull(employee)) {
             throw new EmployeeNotFoundException();
         }
         return employee;
@@ -43,15 +45,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee findEmployee(String firstName, String lastName) {
-        Employee employee = new Employee(firstName, lastName);
-        if (!employees.contains(employee)) {
+        String key = generateKey(lastName,firstName);
+        Employee employee = employees.get(key);
+        if (Objects.isNull(employee)) {
             throw new EmployeeNotFoundException();
         }
         return employee;
     }
 
-    public List<Employee> findAll() {
-        return employees;
+    public Collection<Employee> findAll() {
+        return employees.values();
+    }
+    private String generateKey(String firstName, String lastName){
+       return lastName +firstName;
     }
 }
 

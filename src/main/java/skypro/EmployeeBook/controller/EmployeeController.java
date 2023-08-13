@@ -7,12 +7,13 @@ import org.springframework.web.bind.annotation.RestController;
 import skypro.EmployeeBook.Employee;
 import skypro.EmployeeBook.service.EmployeeService;
 
+import java.util.Collection;
 import java.util.List;
 
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
     public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
@@ -34,7 +35,7 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public List<Employee> getAll() {
+    public Collection<Employee> getAll() {
         return employeeService.findAll();
     }
 }
