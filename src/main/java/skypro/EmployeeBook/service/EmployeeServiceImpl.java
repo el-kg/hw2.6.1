@@ -19,7 +19,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee addEmployee(String firstName, String lastName) {
+    public Employee addEmployee(String firstName, String lastName,int department,double salary) {
         if (employees.size() == EMPLOYEES_SIZE) {
             throw new EmployeeStorageIsFullException();
         }
@@ -28,7 +28,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employees.containsKey(key)) {
             throw new EmployeeAlreadyAddedException();
         }
-        Employee employee = new Employee(firstName, lastName);
+        Employee employee = new Employee(firstName, lastName,department,salary);
         employees.put(key,employee);
         return employee;
     }
