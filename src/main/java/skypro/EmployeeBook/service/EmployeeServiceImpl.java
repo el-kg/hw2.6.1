@@ -1,8 +1,10 @@
 package skypro.EmployeeBook.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import skypro.EmployeeBook.Employee;
 import skypro.EmployeeBook.exception.EmployeeAlreadyAddedException;
+import skypro.EmployeeBook.exception.EmployeeIncorrectNameException;
 import skypro.EmployeeBook.exception.EmployeeNotFoundException;
 import skypro.EmployeeBook.exception.EmployeeStorageIsFullException;
 
@@ -28,6 +30,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employees.containsKey(key)) {
             throw new EmployeeAlreadyAddedException();
         }
+        StringUtils.capitalize(firstName);
+        StringUtils.capitalize(lastName);
         Employee employee = new Employee(firstName, lastName,department,salary);
         employees.put(key,employee);
         return employee;
@@ -52,6 +56,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return employee;
     }
+    @Override
+    public void checkName (String firstName, String lastName){
+        boolean b = StringUtils.containsAny(firstName,"0123456789~`[]{}!@#$%^&*()<>?/,.");
+        boolean a= StringUtils.containsAny(lastName,"0123456789~`[]{}!@#$%^&*()<>?/,.");
+        if(b==true||a==true){throw new EmployeeIncorrectNameException();}
+    }
 
     public Collection<Employee> findAll() {
         return employees.values();
@@ -59,5 +69,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     private String generateKey(String firstName, String lastName){
        return lastName +firstName;
     }
+
 }
 
