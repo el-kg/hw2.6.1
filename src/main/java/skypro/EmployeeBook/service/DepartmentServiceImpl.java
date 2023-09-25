@@ -33,6 +33,15 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .min(Comparator.comparingDouble(Employee::getSalary))
                 .orElseThrow(EmployeeNotFoundException::new);
     }
+    @Override
+    public Double sumSalaryEmployee(int department){
+
+        return employeeService.findAll().stream()
+                .filter(e -> e.getDepartment()== department)
+                .collect(Collectors.summingDouble(Employee::getSalary));
+
+
+    }
 
     @Override
     public Collection<Employee> getEmployeeFromDepartment(int department) {
